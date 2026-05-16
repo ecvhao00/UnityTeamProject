@@ -70,7 +70,6 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
     {
         triggerCollider = GetComponent<BoxCollider2D>();
         triggerCollider.isTrigger = true;
-        triggerCollider.size = new Vector2(1.2f, Mathf.Max(3f, signStartHeight + 1f));
 
         if (signBody == null)
         {
@@ -105,7 +104,6 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
         }
 
         signCollider.isTrigger = false;
-        signCollider.size = Vector2.one;
 
         if (signRigidbody == null)
         {

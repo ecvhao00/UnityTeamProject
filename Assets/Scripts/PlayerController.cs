@@ -24,6 +24,8 @@ namespace TarodevController
         public Vector2 FrameInput => _frameInput.Move;
         public bool DoubleJumpUnlocked => doubleJumpUnlocked;
         public bool WallJumpUnlocked => wallJumpUnlocked;
+        public bool IsTouchingWall => _touchingWall;
+        public int WallDirection => _wallDirection;
         public event Action<bool, float> GroundedChanged;
         public event Action Jumped;
 
@@ -45,6 +47,13 @@ namespace TarodevController
             doubleJumpUnlocked = false;
             wallJumpUnlocked = false;
             ResetMovementState();
+        }
+
+        public void SetAbilityUnlocks(bool doubleJump, bool wallJump)
+        {
+            doubleJumpUnlocked = doubleJump;
+            wallJumpUnlocked = wallJump;
+            ResetAirJumps();
         }
 
         public void ResetMovementState()
@@ -424,5 +433,8 @@ namespace TarodevController
         public event Action<bool, float> GroundedChanged;
         public event Action Jumped;
         public Vector2 FrameInput { get; }
+        public bool WallJumpUnlocked { get; }
+        public bool IsTouchingWall { get; }
+        public int WallDirection { get; }
     }
 }

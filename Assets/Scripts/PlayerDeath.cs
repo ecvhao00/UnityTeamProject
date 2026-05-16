@@ -10,10 +10,7 @@ public class PlayerDeath : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private PlayerController playerController;
-
-    [Header("Knockback")]
-    [SerializeField] private float knockbackX = 10f;
-    [SerializeField] private float knockbackY = 12f;
+    [SerializeField] private PlayerAnimator playerAnimator;
 
     [Header("Fall Death")]
     [SerializeField] private bool useFallDeath = true;
@@ -27,6 +24,10 @@ public class PlayerDeath : MonoBehaviour
     private Collider2D col;
     private bool isDead;
     private Vector2 currentRespawnPoint;
+    private bool savedDoubleJumpUnlocked;
+    private bool savedWallJumpUnlocked;
+    private float defaultGravityScale;
+    private RigidbodyConstraints2D defaultConstraints;
 
     public bool IsDead => isDead;
     public Vector2 CurrentRespawnPoint => currentRespawnPoint;
@@ -37,9 +38,26 @@ public class PlayerDeath : MonoBehaviour
         col = GetComponent<Collider2D>();
         currentRespawnPoint = initialRespawnPoint;
 
+        if (rb != null)
+        {
+            defaultGravityScale = rb.gravityScale;
+            defaultConstraints = rb.constraints | RigidbodyConstraints2D.FreezeRotation;
+        }
+
         if (playerController == null)
         {
             playerController = GetComponent<PlayerController>();
+        }
+
+        if (playerController != null)
+        {
+            savedDoubleJumpUnlocked = playerController.DoubleJumpUnlocked;
+            savedWallJumpUnlocked = playerController.WallJumpUnlocked;
+        }
+
+        if (playerAnimator == null)
+        {
+            playerAnimator = GetComponentInChildren<PlayerAnimator>();
         }
     }
 
@@ -59,7 +77,18 @@ public class PlayerDeath : MonoBehaviour
 
     public void SetRespawnPoint(Vector2 respawnPoint)
     {
+        SaveRespawnState(
+            respawnPoint,
+            playerController != null && playerController.DoubleJumpUnlocked,
+            playerController != null && playerController.WallJumpUnlocked
+        );
+    }
+
+    public void SaveRespawnState(Vector2 respawnPoint, bool doubleJumpUnlocked, bool wallJumpUnlocked)
+    {
         currentRespawnPoint = respawnPoint;
+        savedDoubleJumpUnlocked = doubleJumpUnlocked;
+        savedWallJumpUnlocked = wallJumpUnlocked;
     }
 
     public void Respawn()
@@ -68,6 +97,8 @@ public class PlayerDeath : MonoBehaviour
 
         if (rb != null)
         {
+            rb.gravityScale = defaultGravityScale;
+            rb.constraints = defaultConstraints;
             rb.linearVelocity = Vector2.zero;
             rb.angularVelocity = 0f;
         }
@@ -85,6 +116,11 @@ public class PlayerDeath : MonoBehaviour
             playerController.ResetMovementState();
             playerController.enabled = true;
         }
+
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetDead(false);
+        }
     }
 
     public void RestartGame()
@@ -93,7 +129,7 @@ public class PlayerDeath : MonoBehaviour
 
         if (playerController != null)
         {
-            playerController.ResetAbilityUnlocks();
+            playerController.SetAbilityUnlocks(savedDoubleJumpUnlocked, savedWallJumpUnlocked);
         }
 
         Respawn();
@@ -117,27 +153,30 @@ public class PlayerDeath : MonoBehaviour
         }
     }
 
-    public void Die(Vector2 damageSourcePosition)
+    public void Die(Vector2 _)
     {
         if (isDead) return;
 
         isDead = true;
 
-        // 조작 비활성화
         if (playerController != null)
         {
+            playerController.ResetMovementState();
             playerController.enabled = false;
         }
 
-        // 반동 방향 계산
-        float direction = transform.position.x >= damageSourcePosition.x ? 1f : -1f;
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetDead(true);
+        }
 
-        // 기존 속도 제거 후 반동 적용
-        rb.linearVelocity = Vector2.zero;
-        rb.linearVelocity = new Vector2(direction * knockbackX, knockbackY);
-
-        // 원하면 충돌 끄기
-        // col.enabled = false;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.gravityScale = 0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
 
         Debug.Log("Player Dead");
     }
