@@ -13,7 +13,14 @@ public enum PlayerAbilityUnlock
 [RequireComponent(typeof(SpriteRenderer))]
 public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
 {
+    [Header("Ability")]
     [SerializeField] private PlayerAbilityUnlock ability;
+
+    [Header("Save Point")]
+    [SerializeField] private bool saveRespawnPoint = true;
+    [SerializeField] private Vector2 respawnOffset;
+
+    [Header("Visual")]
     [SerializeField] private Vector2 size = new(0.65f, 0.65f);
     [SerializeField] private Color doubleJumpColor = new(0.2f, 1f, 0.35f, 1f);
     [SerializeField] private Color wallJumpColor = new(0.35f, 0.55f, 1f, 1f);
@@ -76,7 +83,28 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
                 break;
         }
 
+        SaveRespawnState(player);
         SetPickupVisible(false);
+    }
+
+    private void SaveRespawnState(PlayerController player)
+    {
+        if (!saveRespawnPoint) return;
+
+        PlayerDeath playerDeath = player.GetComponent<PlayerDeath>();
+        if (playerDeath == null)
+        {
+            playerDeath = player.GetComponentInParent<PlayerDeath>();
+        }
+
+        if (playerDeath == null) return;
+
+        Vector2 respawnPoint = (Vector2)transform.position + respawnOffset;
+        playerDeath.SaveRespawnState(
+            respawnPoint,
+            player.DoubleJumpUnlocked,
+            player.WallJumpUnlocked
+        );
     }
 
     public void ResetForGameRestart()
