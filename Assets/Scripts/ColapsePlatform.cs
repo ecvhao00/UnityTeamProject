@@ -14,6 +14,12 @@ public class ColapsePlatform : MonoBehaviour, IGameResettable
     [SerializeField] private Rigidbody2D platformRigidbody;
     [SerializeField] private float fallGravityScale = 4f;
 
+    [Header("Wobble")]
+    [SerializeField] private bool wobbleBeforeFall;
+    [SerializeField] private float wobblePositionAmplitude = 0.05f;
+    [SerializeField] private float wobbleRotationAngle = 2f;
+    [SerializeField] private float wobbleFrequency = 12f;
+
     private Collider2D platformCollider;
     private Vector3 startPosition;
     private Quaternion startRotation;
@@ -45,6 +51,9 @@ public class ColapsePlatform : MonoBehaviour, IGameResettable
         fallDelay = Mathf.Max(0f, fallDelay);
         respawnDelay = Mathf.Max(0f, respawnDelay);
         fallGravityScale = Mathf.Max(0f, fallGravityScale);
+        wobblePositionAmplitude = Mathf.Max(0f, wobblePositionAmplitude);
+        wobbleRotationAngle = Mathf.Max(0f, wobbleRotationAngle);
+        wobbleFrequency = Mathf.Max(0f, wobbleFrequency);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -111,7 +120,16 @@ public class ColapsePlatform : MonoBehaviour, IGameResettable
     {
         isFalling = true;
 
-        yield return new WaitForSeconds(fallDelay);
+        if (wobbleBeforeFall && fallDelay > 0f)
+        {
+            yield return WobbleForSeconds(fallDelay);
+        }
+        else
+        {
+            yield return new WaitForSeconds(fallDelay);
+        }
+
+        transform.SetPositionAndRotation(startPosition, startRotation);
 
         platformRigidbody.bodyType = RigidbodyType2D.Dynamic;
         platformRigidbody.gravityScale = fallGravityScale;
@@ -120,5 +138,22 @@ public class ColapsePlatform : MonoBehaviour, IGameResettable
         yield return new WaitForSeconds(respawnDelay);
 
         ResetPlatform();
+    }
+
+    private IEnumerator WobbleForSeconds(float duration)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float wave = Mathf.Sin(elapsed * wobbleFrequency * Mathf.PI * 2f);
+            Vector3 offset = Vector3.right * (wave * wobblePositionAmplitude);
+            Quaternion rotation = startRotation * Quaternion.Euler(0f, 0f, wave * wobbleRotationAngle);
+            transform.SetPositionAndRotation(startPosition + offset, rotation);
+            yield return null;
+        }
+
+        transform.SetPositionAndRotation(startPosition, startRotation);
     }
 }

@@ -152,6 +152,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AbilityUnlockPickup
   ability: 0
+  saveRespawnPoint: 1
+  respawnOffset: {x: 0, y: 0}
+  reappearOnRestart: 0
   size: {x: 0.65, y: 0.65}
   doubleJumpColor: {r: 0.2, g: 1, b: 0.35, a: 1}
   wallJumpColor: {r: 0.35, g: 0.55, b: 1, a: 1}

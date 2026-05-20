@@ -19,6 +19,7 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
     [Header("Save Point")]
     [SerializeField] private bool saveRespawnPoint = true;
     [SerializeField] private Vector2 respawnOffset;
+    [SerializeField] private bool reappearOnRestart;
 
     [Header("Visual")]
     [SerializeField] private Vector2 size = new(0.65f, 0.65f);
@@ -109,8 +110,34 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
 
     public void ResetForGameRestart()
     {
-        consumed = false;
-        SetPickupVisible(true);
+        if (reappearOnRestart)
+        {
+            consumed = false;
+            SetPickupVisible(true);
+            return;
+        }
+
+        if (!consumed && IsAbilityAlreadyUnlocked())
+        {
+            consumed = true;
+        }
+
+        SetPickupVisible(!consumed);
+    }
+
+    private bool IsAbilityAlreadyUnlocked()
+    {
+        if (!Application.isPlaying) return false;
+
+        PlayerController player = FindAnyObjectByType<PlayerController>();
+        if (player == null) return false;
+
+        return ability switch
+        {
+            PlayerAbilityUnlock.DoubleJump => player.DoubleJumpUnlocked,
+            PlayerAbilityUnlock.WallJump => player.WallJumpUnlocked,
+            _ => false
+        };
     }
 
     private void SetPickupVisible(bool visible)

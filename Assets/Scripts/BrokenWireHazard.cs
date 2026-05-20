@@ -16,8 +16,11 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
     [SerializeField] private bool startElectricOn;
 
     [Header("Visual")]
-    [SerializeField] private Color electricOnColor = new(0.2f, 0.85f, 1f, 0.9f);
-    [SerializeField] private Color electricOffColor = new(0.25f, 0.25f, 0.25f, 0.45f);
+    [SerializeField] private Sprite electricOnSprite;
+    [SerializeField] private Sprite electricOffSprite;
+    [SerializeField] private SpriteDrawMode spriteDrawMode = SpriteDrawMode.Sliced;
+    [SerializeField] private Color electricOnColor = Color.white;
+    [SerializeField] private Color electricOffColor = Color.white;
 
     private BoxCollider2D triggerCollider;
     private SpriteRenderer spriteRenderer;
@@ -91,15 +94,18 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
     {
         triggerCollider = GetComponent<BoxCollider2D>();
         triggerCollider.isTrigger = true;
-        triggerCollider.size = Vector2.one;
+        triggerCollider.size = size;
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer.sprite == null)
         {
-            spriteRenderer.sprite = GetGeneratedSquareSprite();
+            spriteRenderer.sprite = startElectricOn
+                ? electricOnSprite != null ? electricOnSprite : GetGeneratedSquareSprite()
+                : electricOffSprite != null ? electricOffSprite : GetGeneratedSquareSprite();
         }
 
-        transform.localScale = new Vector3(size.x, size.y, 1f);
+        ApplySpriteRendererSize();
+        transform.localScale = Vector3.one;
     }
 
     private IEnumerator ElectricCycle()
@@ -136,8 +142,27 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
 
         if (spriteRenderer != null)
         {
+            Sprite stateSprite = electricOn ? electricOnSprite : electricOffSprite;
+            if (stateSprite != null)
+            {
+                spriteRenderer.sprite = stateSprite;
+            }
+            else if (spriteRenderer.sprite == null)
+            {
+                spriteRenderer.sprite = GetGeneratedSquareSprite();
+            }
+
+            ApplySpriteRendererSize();
             spriteRenderer.color = electricOn ? electricOnColor : electricOffColor;
         }
+    }
+
+    private void ApplySpriteRendererSize()
+    {
+        if (spriteRenderer == null) return;
+
+        spriteRenderer.drawMode = spriteDrawMode;
+        spriteRenderer.size = size;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -163,8 +188,8 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
     private void CheckPlayersAlreadyInside()
     {
         Vector2 worldSize = new(
-            Mathf.Abs(size.x * transform.lossyScale.x / transform.localScale.x),
-            Mathf.Abs(size.y * transform.lossyScale.y / transform.localScale.y)
+            Mathf.Abs(size.x * transform.lossyScale.x),
+            Mathf.Abs(size.y * transform.lossyScale.y)
         );
 
         Collider2D[] overlaps = Physics2D.OverlapBoxAll(transform.position, worldSize, transform.eulerAngles.z);

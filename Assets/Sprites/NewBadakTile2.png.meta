@@ -1,0 +1,858 @@
+fileFormatVersion: 2
+guid: 1e37280f3f1714d4cb7e078145b76a37
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2476355760889342921
+    second: NewBadakTile2_0
+  - first:
+      213: 1421011730914193115
+    second: NewBadakTile2_1
+  - first:
+      213: -6104405213612753109
+    second: NewBadakTile2_2
+  - first:
+      213: -789078504356536894
+    second: NewBadakTile2_3
+  - first:
+      213: -4377518801704795819
+    second: NewBadakTile2_4
+  - first:
+      213: 4765858647102747708
+    second: NewBadakTile2_5
+  - first:
+      213: 7785258036670423722
+    second: NewBadakTile2_6
+  - first:
+      213: 3688778523004311979
+    second: NewBadakTile2_7
+  - first:
+      213: 2487951457935362720
+    second: NewBadakTile2_8
+  - first:
+      213: 7032020003757506159
+    second: NewBadakTile2_9
+  - first:
+      213: -2732991714860318492
+    second: NewBadakTile2_10
+  - first:
+      213: -749584977275009887
+    second: NewBadakTile2_11
+  - first:
+      213: 3459763333177702245
+    second: NewBadakTile2_12
+  - first:
+      213: -2495233441027728812
+    second: NewBadakTile2_13
+  - first:
+      213: 2780716953676333810
+    second: NewBadakTile2_14
+  - first:
+      213: 5286705363862858265
+    second: NewBadakTile2_15
+  - first:
+      213: 2854326522341457750
+    second: NewBadakTile2_16
+  - first:
+      213: 6549420986120496187
+    second: NewBadakTile2_17
+  - first:
+      213: -4479962861282616354
+    second: NewBadakTile2_18
+  - first:
+      213: -1703588370554454569
+    second: NewBadakTile2_19
+  - first:
+      213: -6107696183208249915
+    second: NewBadakTile2_20
+  - first:
+      213: 8235896770164343467
+    second: NewBadakTile2_21
+  - first:
+      213: 121663497976999458
+    second: NewBadakTile2_22
+  - first:
+      213: -7133229933257524214
+    second: NewBadakTile2_23
+  - first:
+      213: -7038432254159636941
+    second: NewBadakTile2_24
+  - first:
+      213: -5764024380010015656
+    second: NewBadakTile2_25
+  - first:
+      213: -4972610309854023141
+    second: NewBadakTile2_26
+  - first:
+      213: -6176163671144388246
+    second: NewBadakTile2_27
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: NewBadakTile2_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 562
+        width: 194
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cb2d49b178cd5220800000000000000
+      internalID: 2476355760889342921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_1
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 443
+        width: 193
+        height: 186
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdeadc2f3a278b310800000000000000
+      internalID: 1421011730914193115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_2
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 444
+        width: 191
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2fb19dfccbc84ba0800000000000000
+      internalID: -6104405213612753109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_3
+      rect:
+        serializedVersion: 2
+        x: 651
+        y: 562
+        width: 190
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cd9eefe741ac05f0800000000000000
+      internalID: -789078504356536894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_4
+      rect:
+        serializedVersion: 2
+        x: 865
+        y: 444
+        width: 191
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 551cacac7ddef33c0800000000000000
+      internalID: -4377518801704795819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_5
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 562
+        width: 191
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c34784e503bb32240800000000000000
+      internalID: 4765858647102747708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_6
+      rect:
+        serializedVersion: 2
+        x: 1294
+        y: 443
+        width: 177
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa2ee70bfeaca0c60800000000000000
+      internalID: 7785258036670423722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_7
+      rect:
+        serializedVersion: 2
+        x: 1495
+        y: 444
+        width: 171
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba913cec58c213330800000000000000
+      internalID: 3688778523004311979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_8
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 444
+        width: 192
+        height: 114
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0aa07a45baaf68220800000000000000
+      internalID: 2487951457935362720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_9
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 504
+        width: 6
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6e3869afe0c69160800000000000000
+      internalID: 7032020003757506159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_10
+      rect:
+        serializedVersion: 2
+        x: 651
+        y: 444
+        width: 190
+        height: 114
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e04aade386721ad0800000000000000
+      internalID: -2732991714860318492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_11
+      rect:
+        serializedVersion: 2
+        x: 1081
+        y: 443
+        width: 190
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a4cd844f60f895f0800000000000000
+      internalID: -749584977275009887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_12
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 229
+        width: 194
+        height: 188
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5677af0cb6c830030800000000000000
+      internalID: 3459763333177702245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_13
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 229
+        width: 192
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45adddbd7662f5dd0800000000000000
+      internalID: -2495233441027728812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_14
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 229
+        width: 190
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f2c8c42657179620800000000000000
+      internalID: 2780716953676333810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_15
+      rect:
+        serializedVersion: 2
+        x: 651
+        y: 229
+        width: 190
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91aa23da4862e5940800000000000000
+      internalID: 5286705363862858265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_16
+      rect:
+        serializedVersion: 2
+        x: 865
+        y: 229
+        width: 191
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65f732569da9c9720800000000000000
+      internalID: 2854326522341457750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_17
+      rect:
+        serializedVersion: 2
+        x: 1081
+        y: 229
+        width: 190
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b346332cfa734ea50800000000000000
+      internalID: 6549420986120496187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_18
+      rect:
+        serializedVersion: 2
+        x: 1294
+        y: 229
+        width: 177
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edb9e467389f3d1c0800000000000000
+      internalID: -4479962861282616354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_19
+      rect:
+        serializedVersion: 2
+        x: 1494
+        y: 229
+        width: 172
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7dd7d992763ab58e0800000000000000
+      internalID: -1703588370554454569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_20
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 13
+        width: 194
+        height: 188
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c5fcdb6eaa1d3ba0800000000000000
+      internalID: -6107696183208249915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_21
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 13
+        width: 192
+        height: 188
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba2ce601a78cb4270800000000000000
+      internalID: 8235896770164343467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_22
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 13
+        width: 191
+        height: 188
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22eec0b8e4c30b100800000000000000
+      internalID: 121663497976999458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_23
+      rect:
+        serializedVersion: 2
+        x: 651
+        y: 13
+        width: 190
+        height: 188
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0c700f4b2da10d90800000000000000
+      internalID: -7133229933257524214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_24
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 13
+        width: 192
+        height: 188
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 336b923f727725e90800000000000000
+      internalID: -7038432254159636941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_25
+      rect:
+        serializedVersion: 2
+        x: 1081
+        y: 14
+        width: 190
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 854dfc09d521200b0800000000000000
+      internalID: -5764024380010015656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_26
+      rect:
+        serializedVersion: 2
+        x: 1294
+        y: 13
+        width: 176
+        height: 188
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b12b4bae44dbdfab0800000000000000
+      internalID: -4972610309854023141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NewBadakTile2_27
+      rect:
+        serializedVersion: 2
+        x: 1494
+        y: 14
+        width: 173
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6924c22ddbd94aa0800000000000000
+      internalID: -6176163671144388246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      NewBadakTile2_0: 2476355760889342921
+      NewBadakTile2_1: 1421011730914193115
+      NewBadakTile2_10: -2732991714860318492
+      NewBadakTile2_11: -749584977275009887
+      NewBadakTile2_12: 3459763333177702245
+      NewBadakTile2_13: -2495233441027728812
+      NewBadakTile2_14: 2780716953676333810
+      NewBadakTile2_15: 5286705363862858265
+      NewBadakTile2_16: 2854326522341457750
+      NewBadakTile2_17: 6549420986120496187
+      NewBadakTile2_18: -4479962861282616354
+      NewBadakTile2_19: -1703588370554454569
+      NewBadakTile2_2: -6104405213612753109
+      NewBadakTile2_20: -6107696183208249915
+      NewBadakTile2_21: 8235896770164343467
+      NewBadakTile2_22: 121663497976999458
+      NewBadakTile2_23: -7133229933257524214
+      NewBadakTile2_24: -7038432254159636941
+      NewBadakTile2_25: -5764024380010015656
+      NewBadakTile2_26: -4972610309854023141
+      NewBadakTile2_27: -6176163671144388246
+      NewBadakTile2_3: -789078504356536894
+      NewBadakTile2_4: -4377518801704795819
+      NewBadakTile2_5: 4765858647102747708
+      NewBadakTile2_6: 7785258036670423722
+      NewBadakTile2_7: 3688778523004311979
+      NewBadakTile2_8: 2487951457935362720
+      NewBadakTile2_9: 7032020003757506159
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
