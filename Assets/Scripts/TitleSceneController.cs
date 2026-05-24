@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class TitleSceneController : MonoBehaviour
 {
-    [SerializeField] private string mainSceneName = "MainScene";
+    [SerializeField] private string mainSceneName = "NewMainScene";
     [SerializeField] private string titleText = "G4 Team Project";
     [SerializeField] private string promptText = "Press Enter";
 

@@ -240,6 +240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8af9a7a3ac5746eca2ec6d5c818964cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleSceneController
-  mainSceneName: MainScene
+  mainSceneName: NewMainScene
   titleText: G4 Team Project
   promptText: Press Enter
