@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b04b6750ac12a4940998f45ee3010097
+guid: 75c0a0d35077e1547897c72716ecbe70
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3673699258042612350
-    second: pixil-gif-drawing_2_0
+      213: 8291033948329077090
+    second: "ChatGPT Image 2026\uB144 5\uC6D4 24\uC77C \uC624\uD6C4 11_31_02_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pixil-gif-drawing_2_0
+      name: "ChatGPT Image 2026\uB144 5\uC6D4 24\uC77C \uC624\uD6C4 11_31_02_0"
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 800
-        height: 800
+        width: 2172
+        height: 724
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 28501c82df5640dc0800000000000000
-      internalID: -3673699258042612350
+      spriteID: 269ebdeb27baf0370800000000000000
+      internalID: 8291033948329077090
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      pixil-gif-drawing_2_0: -3673699258042612350
+      "ChatGPT Image 2026\uB144 5\uC6D4 24\uC77C \uC624\uD6C4 11_31_02_0": 8291033948329077090
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ec206a1670bea4046816a737445d94d0
+guid: 076a5c087a11bce4ea24afa2415a1c71
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3359910462578391312
-    second: Trashcan_Pla_0
+      213: 7415068236695235402
+    second: Brick_dark_2x1_2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 200
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,23 +113,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Trashcan_Pla_0
+      name: Brick_dark_2x1_2_0
       rect:
         serializedVersion: 2
-        x: 161
-        y: 5
-        width: 470
-        height: 644
+        x: 0
+        y: 0
+        width: 400
+        height: 400
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0f685e06c333f51d0800000000000000
-      internalID: -3359910462578391312
+      spriteID: a4b6089464d97e660800000000000000
+      internalID: 7415068236695235402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brick_dark_2x1_2_1
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 0
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92b795c09383e5f47950810741ba6d5e
+      internalID: 403214523
       vertices: []
       indices: 
       edges: []
@@ -138,7 +160,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 55b9561001e35ed42bb5f35548a9ea30
     internalID: 0
     vertices: []
     indices: 
@@ -146,9 +168,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":2.0},"gridSpriteSize":{"x":400.0,"y":400.0},"gridSpriteOffset":{"x":0.0,"y":400.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Trashcan_Pla_0: -3359910462578391312
+      Brick_dark_2x1_2_0: 7415068236695235402
+      Brick_dark_2x1_2_1: 403214523
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

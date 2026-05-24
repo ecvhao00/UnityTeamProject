@@ -26,16 +26,26 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
     [SerializeField] private Color doubleJumpColor = new(0.2f, 1f, 0.35f, 1f);
     [SerializeField] private Color wallJumpColor = new(0.35f, 0.55f, 1f, 1f);
 
+    [Header("Float Motion")]
+    [SerializeField] private bool floatMotion = true;
+    [SerializeField] private float floatAmplitude = 0.06f;
+    [SerializeField] private float floatFrequency = 1.2f;
+    [SerializeField] private float floatPhaseOffset;
+
     private static Sprite generatedSquareSprite;
     private bool consumed;
+    private Vector3 baseLocalPosition;
+    private bool hasBaseLocalPosition;
 
     private void Awake()
     {
+        CaptureFloatOrigin();
         EnsureSetup();
     }
 
     private void OnEnable()
     {
+        CaptureFloatOrigin();
         EnsureSetup();
     }
 
@@ -43,7 +53,16 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
     {
         size.x = Mathf.Max(0.1f, size.x);
         size.y = Mathf.Max(0.1f, size.y);
+        floatAmplitude = Mathf.Max(0f, floatAmplitude);
+        floatFrequency = Mathf.Max(0f, floatFrequency);
         EnsureSetup();
+    }
+
+    private void Update()
+    {
+        if (!Application.isPlaying) return;
+
+        UpdateFloatMotion();
     }
 
     private void EnsureSetup()
@@ -53,13 +72,21 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
         trigger.size = Vector2.one;
 
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        bool usesGeneratedSquare = renderer.sprite == null;
         if (renderer.sprite == null)
         {
             renderer.sprite = GetGeneratedSquareSprite();
         }
 
-        renderer.color = ability == PlayerAbilityUnlock.DoubleJump ? doubleJumpColor : wallJumpColor;
+        renderer.color = usesGeneratedSquare || renderer.sprite == generatedSquareSprite
+            ? GetAbilityColor()
+            : Color.white;
         transform.localScale = new Vector3(size.x, size.y, 1f);
+    }
+
+    private Color GetAbilityColor()
+    {
+        return ability == PlayerAbilityUnlock.DoubleJump ? doubleJumpColor : wallJumpColor;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -100,7 +127,7 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
 
         if (playerDeath == null) return;
 
-        Vector2 respawnPoint = (Vector2)transform.position + respawnOffset;
+        Vector2 respawnPoint = (Vector2)GetBaseWorldPosition() + respawnOffset;
         playerDeath.SaveRespawnState(
             respawnPoint,
             player.DoubleJumpUnlocked,
@@ -153,6 +180,34 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
         {
             renderer.enabled = visible;
         }
+    }
+
+    private void CaptureFloatOrigin()
+    {
+        if (hasBaseLocalPosition) return;
+
+        baseLocalPosition = transform.localPosition;
+        hasBaseLocalPosition = true;
+    }
+
+    private void UpdateFloatMotion()
+    {
+        CaptureFloatOrigin();
+
+        if (!floatMotion || Mathf.Approximately(floatAmplitude, 0f) || Mathf.Approximately(floatFrequency, 0f))
+        {
+            transform.localPosition = baseLocalPosition;
+            return;
+        }
+
+        float offsetY = Mathf.Sin((Time.time * floatFrequency + floatPhaseOffset) * Mathf.PI * 2f) * floatAmplitude;
+        transform.localPosition = baseLocalPosition + new Vector3(0f, offsetY, 0f);
+    }
+
+    private Vector3 GetBaseWorldPosition()
+    {
+        CaptureFloatOrigin();
+        return transform.parent == null ? baseLocalPosition : transform.parent.TransformPoint(baseLocalPosition);
     }
 
     private static Sprite GetGeneratedSquareSprite()

@@ -12,10 +12,12 @@ namespace TarodevController
         [SerializeField] private Sprite damagedSprite;
         [SerializeField, Min(1f)] private float runFramesPerSecond = 10f;
         [SerializeField, Min(1f)] private float jumpFramesPerSecond = 15f;
-        [SerializeField] private float[] jumpRotationAngles = { 34f, 22f, 10f, 0f, -12f, -24f };
+        [SerializeField] private float[] jumpRotationAngles = { 17f, 11f, 5f, 0f, -6f, -12f };
         [SerializeField, Min(0)] private int wallClingRunSpriteIndex = 2;
         [SerializeField] private float wallClingRightWallAngle = 90f;
         [SerializeField] private float wallClingLeftWallAngle = 270f;
+        [SerializeField] private Vector2 wallClingRightWallOffset = new(0.2f, 0f);
+        [SerializeField] private Vector2 wallClingLeftWallOffset = Vector2.zero;
         [SerializeField] private bool faceRightByDefault = true;
         [SerializeField] private float moveThreshold = 0.01f;
 
@@ -28,6 +30,7 @@ namespace TarodevController
         private bool isDead;
         private bool airborneFromJump;
         private Quaternion defaultLocalRotation;
+        private Vector3 defaultLocalPosition;
 
         private void Awake()
         {
@@ -37,6 +40,7 @@ namespace TarodevController
             }
 
             defaultLocalRotation = transform.localRotation;
+            defaultLocalPosition = transform.localPosition;
             SetPlayer(GetComponentInParent<IPlayerController>());
             ApplyIdleSprite();
         }
@@ -224,6 +228,8 @@ namespace TarodevController
             spriteRenderer.sprite = frame != null ? frame : idleSprite;
 
             float angle = wallDirection > 0 ? wallClingRightWallAngle : wallClingLeftWallAngle;
+            Vector2 offset = wallDirection > 0 ? wallClingRightWallOffset : wallClingLeftWallOffset;
+            transform.localPosition = defaultLocalPosition + (Vector3)offset;
             transform.localRotation = defaultLocalRotation * Quaternion.Euler(0f, 0f, angle);
         }
 
@@ -246,6 +252,7 @@ namespace TarodevController
                 angle = -angle;
             }
 
+            ResetVisualPosition();
             transform.localRotation = defaultLocalRotation * Quaternion.Euler(0f, 0f, angle);
         }
 
@@ -260,6 +267,12 @@ namespace TarodevController
         private void ResetVisualRotation()
         {
             transform.localRotation = defaultLocalRotation;
+            ResetVisualPosition();
+        }
+
+        private void ResetVisualPosition()
+        {
+            transform.localPosition = defaultLocalPosition;
         }
 
         private Sprite GetRunSprite(int index)

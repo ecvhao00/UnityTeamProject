@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class MovingBackground : MonoBehaviour
 {
     private const string SceneName = "NewMainScene";
-    private const string ResourceName = "BGLong";
+    private const string ResourceName = "BGLong3";
     private const string BackgroundObjectName = "Runtime Moving Background";
     private const int BackgroundSortingOrder = -1000;
 
