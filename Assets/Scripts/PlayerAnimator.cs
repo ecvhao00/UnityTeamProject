@@ -10,14 +10,15 @@ namespace TarodevController
         [SerializeField] private Sprite[] runSprites = new Sprite[5];
         [SerializeField] private Sprite[] jumpSprites = new Sprite[6];
         [SerializeField] private Sprite damagedSprite;
+        [SerializeField] private Sprite wallClingSprite;
         [SerializeField, Min(1f)] private float runFramesPerSecond = 10f;
         [SerializeField, Min(1f)] private float jumpFramesPerSecond = 15f;
         [SerializeField] private float[] jumpRotationAngles = { 17f, 11f, 5f, 0f, -6f, -12f };
         [SerializeField, Min(0)] private int wallClingRunSpriteIndex = 2;
         [SerializeField] private float wallClingRightWallAngle = 90f;
         [SerializeField] private float wallClingLeftWallAngle = 270f;
-        [SerializeField] private Vector2 wallClingRightWallOffset = new(0.2f, 0f);
-        [SerializeField] private Vector2 wallClingLeftWallOffset = Vector2.zero;
+        [SerializeField] private Vector2 wallClingRightWallOffset = new(0.61f, 0f);
+        [SerializeField] private Vector2 wallClingLeftWallOffset = new(-0.38f, 0f);
         [SerializeField] private bool faceRightByDefault = true;
         [SerializeField] private float moveThreshold = 0.01f;
 
@@ -224,7 +225,7 @@ namespace TarodevController
                 spriteRenderer.flipX = faceRightByDefault ? wallDirection < 0 : wallDirection > 0;
             }
 
-            Sprite frame = GetRunSprite(wallClingRunSpriteIndex);
+            Sprite frame = wallClingSprite != null ? wallClingSprite : GetRunSprite(wallClingRunSpriteIndex);
             spriteRenderer.sprite = frame != null ? frame : idleSprite;
 
             float angle = wallDirection > 0 ? wallClingRightWallAngle : wallClingLeftWallAngle;
