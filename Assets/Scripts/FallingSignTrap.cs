@@ -17,11 +17,19 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
     [SerializeField] private Vector2 signSize = new(2.5f, 0.75f);
     [SerializeField] private float signStartHeight = 4f;
     [SerializeField] private Color signColor = new(1f, 0.85f, 0.05f, 1f);
+    [SerializeField] private bool signColliderAsTrigger;
 
     [Header("Timing")]
     [SerializeField] private float warningDuration = 0.6f;
     [SerializeField] private float resetDelay = 1.25f;
     [SerializeField] private bool resetAfterDrop = true;
+
+    [Header("Warning")]
+    [SerializeField] private bool useDustWarning = true;
+    [SerializeField] private bool wobbleBeforeDrop;
+    [SerializeField] private float wobblePositionAmplitude = 0.05f;
+    [SerializeField] private float wobbleRotationAngle = 2f;
+    [SerializeField] private float wobbleFrequency = 12f;
 
     [Header("Fall")]
     [SerializeField] private float fallGravityScale = 4f;
@@ -57,6 +65,9 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
         warningDuration = Mathf.Max(0f, warningDuration);
         resetDelay = Mathf.Max(0f, resetDelay);
         fallGravityScale = Mathf.Max(0f, fallGravityScale);
+        wobblePositionAmplitude = Mathf.Max(0f, wobblePositionAmplitude);
+        wobbleRotationAngle = Mathf.Max(0f, wobbleRotationAngle);
+        wobbleFrequency = Mathf.Max(0f, wobbleFrequency);
 
         EnsureSetup();
 
@@ -103,7 +114,7 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
             }
         }
 
-        signCollider.isTrigger = false;
+        signCollider.isTrigger = signColliderAsTrigger;
 
         if (signRigidbody == null)
         {
@@ -124,7 +135,7 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
 
         hitbox.Initialize(this);
 
-        if (dustWarning == null)
+        if (useDustWarning && dustWarning == null)
         {
             Transform existingDust = transform.Find("Dust Warning");
             dustWarning = existingDust != null ? existingDust.GetComponent<ParticleSystem>() : null;
@@ -142,6 +153,8 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
 
     private void ConfigureDust()
     {
+        if (!useDustWarning || dustWarning == null) return;
+
         dustWarning.transform.localPosition = new Vector3(0f, signStartHeight - signSize.y * 0.5f, 0f);
 
         ParticleSystem.MainModule main = dustWarning.main;
@@ -178,10 +191,22 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
         triggered = true;
         falling = false;
 
-        dustWarning.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        dustWarning.Play();
+        if (useDustWarning && dustWarning != null)
+        {
+            dustWarning.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            dustWarning.Play();
+        }
 
-        yield return new WaitForSeconds(warningDuration);
+        if (wobbleBeforeDrop && warningDuration > 0f)
+        {
+            yield return WobbleForSeconds(warningDuration);
+        }
+        else
+        {
+            yield return new WaitForSeconds(warningDuration);
+        }
+
+        ResetSignToStart();
 
         falling = true;
         signRigidbody.bodyType = RigidbodyType2D.Dynamic;
@@ -210,7 +235,10 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
 
         triggered = false;
         falling = false;
-        dustWarning.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        if (dustWarning != null)
+        {
+            dustWarning.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
         ResetSignToStart();
     }
 
@@ -225,7 +253,49 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
 
         signBody.localPosition = new Vector3(0f, signStartHeight, 0f);
         signBody.localRotation = Quaternion.identity;
-        signBody.localScale = new Vector3(signSize.x, signSize.y, 1f);
+
+        Vector2 spriteSize = GetSignSpriteSize();
+        signBody.localScale = new Vector3(signSize.x / spriteSize.x, signSize.y / spriteSize.y, 1f);
+
+        if (signCollider != null)
+        {
+            signCollider.isTrigger = signColliderAsTrigger;
+            signCollider.size = spriteSize;
+            signCollider.offset = Vector2.zero;
+        }
+    }
+
+    private IEnumerator WobbleForSeconds(float duration)
+    {
+        float elapsed = 0f;
+        Vector3 startPosition = new(0f, signStartHeight, 0f);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float wave = Mathf.Sin(elapsed * wobbleFrequency * Mathf.PI * 2f);
+            Vector3 offset = Vector3.right * (wave * wobblePositionAmplitude);
+            Quaternion rotation = Quaternion.Euler(0f, 0f, wave * wobbleRotationAngle);
+            signBody.localPosition = startPosition + offset;
+            signBody.localRotation = rotation;
+            yield return null;
+        }
+
+        signBody.localPosition = startPosition;
+        signBody.localRotation = Quaternion.identity;
+    }
+
+    private Vector2 GetSignSpriteSize()
+    {
+        if (signRenderer == null || signRenderer.sprite == null)
+        {
+            return Vector2.one;
+        }
+
+        Vector2 spriteSize = signRenderer.sprite.bounds.size;
+        spriteSize.x = Mathf.Max(0.001f, spriteSize.x);
+        spriteSize.y = Mathf.Max(0.001f, spriteSize.y);
+        return spriteSize;
     }
 
     internal void HandleSignCollision(Collision2D collision)
@@ -233,6 +303,16 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
         if (!falling) return;
 
         PlayerDeath playerDeath = collision.collider.GetComponentInParent<PlayerDeath>();
+        if (playerDeath == null) return;
+
+        playerDeath.Die(signBody.position);
+    }
+
+    internal void HandleSignTrigger(Collider2D other)
+    {
+        if (!falling || !IsPlayer(other)) return;
+
+        PlayerDeath playerDeath = other.GetComponentInParent<PlayerDeath>();
         if (playerDeath == null) return;
 
         playerDeath.Die(signBody.position);

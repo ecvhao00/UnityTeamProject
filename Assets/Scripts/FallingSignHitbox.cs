@@ -13,4 +13,9 @@ public class FallingSignHitbox : MonoBehaviour
     {
         owner?.HandleSignCollision(collision);
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        owner?.HandleSignTrigger(other);
+    }
 }
