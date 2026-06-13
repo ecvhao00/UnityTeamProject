@@ -12,7 +12,6 @@ public class SavePoint : MonoBehaviour
     [SerializeField] private Color activeColor = new(0.2f, 1f, 0.8f, 1f);
     [SerializeField] private bool showMessage = true;
 
-    private static Sprite generatedSquareSprite;
     private bool activated;
 
     private void Awake()
@@ -41,7 +40,7 @@ public class SavePoint : MonoBehaviour
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
         if (renderer.sprite == null)
         {
-            renderer.sprite = GetGeneratedSquareSprite();
+            renderer.sprite = RuntimeSpriteUtility.WhiteSquareSprite;
         }
 
         renderer.color = activated ? activeColor : inactiveColor;
@@ -79,26 +78,4 @@ public class SavePoint : MonoBehaviour
         }
     }
 
-    private static Sprite GetGeneratedSquareSprite()
-    {
-        if (generatedSquareSprite != null) return generatedSquareSprite;
-
-        Texture2D texture = new(1, 1)
-        {
-            hideFlags = HideFlags.HideAndDontSave,
-            filterMode = FilterMode.Point
-        };
-        texture.SetPixel(0, 0, Color.white);
-        texture.Apply();
-
-        generatedSquareSprite = Sprite.Create(
-            texture,
-            new Rect(0f, 0f, 1f, 1f),
-            new Vector2(0.5f, 0.5f),
-            1f
-        );
-        generatedSquareSprite.hideFlags = HideFlags.HideAndDontSave;
-
-        return generatedSquareSprite;
-    }
 }

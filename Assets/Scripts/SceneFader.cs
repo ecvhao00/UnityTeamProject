@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -40,6 +41,21 @@ public sealed class SceneFader : MonoBehaviour
         fader.StartCoroutine(fader.LoadSceneRoutine(sceneName));
     }
 
+    public static IEnumerator FadeOutIn(Action onBlack)
+    {
+        SceneFader fader = EnsureInstance();
+        if (fader.isTransitioning) yield break;
+
+        fader.isTransitioning = true;
+        fader.StopAllCoroutines();
+
+        yield return fader.FadeTo(1f);
+        onBlack?.Invoke();
+        yield return fader.FadeTo(0f);
+
+        fader.isTransitioning = false;
+    }
+
     private static SceneFader EnsureInstance()
     {
         if (instance != null) return instance;
@@ -67,6 +83,7 @@ public sealed class SceneFader : MonoBehaviour
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
         isTransitioning = true;
+        MainSceneBgm.FadeOut();
 
         yield return FadeTo(1f);
 
@@ -112,53 +129,19 @@ public sealed class SceneFader : MonoBehaviour
     {
         if (canvasGroup != null) return;
 
-        Canvas canvas = gameObject.GetComponent<Canvas>();
-        if (canvas == null)
-        {
-            canvas = gameObject.AddComponent<Canvas>();
-        }
-
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 10000;
-
-        CanvasScaler scaler = gameObject.GetComponent<CanvasScaler>();
-        if (scaler == null)
-        {
-            scaler = gameObject.AddComponent<CanvasScaler>();
-        }
-
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920f, 1080f);
-        scaler.matchWidthOrHeight = 0.5f;
-
-        canvasGroup = gameObject.GetComponent<CanvasGroup>();
-        if (canvasGroup == null)
-        {
-            canvasGroup = gameObject.AddComponent<CanvasGroup>();
-        }
-
-        canvasGroup.blocksRaycasts = true;
-        canvasGroup.interactable = false;
-
-        if (gameObject.GetComponent<GraphicRaycaster>() == null)
-        {
-            gameObject.AddComponent<GraphicRaycaster>();
-        }
+        RuntimeUiUtility.SetupOverlayCanvas(gameObject, 10000);
+        canvasGroup = RuntimeUiUtility.SetupCanvasGroup(gameObject, true);
 
         Transform existingPanel = transform.Find("Fade Panel");
         GameObject panelObject = existingPanel != null ? existingPanel.gameObject : new GameObject("Fade Panel");
         panelObject.transform.SetParent(transform, false);
 
-        Image image = panelObject.GetComponent<Image>();
-        if (image == null)
-        {
-            image = panelObject.AddComponent<Image>();
-        }
+        Image image = panelObject.GetOrAdd<Image>();
 
         image.color = Color.black;
         image.raycastTarget = true;
 
-        RectTransform rectTransform = panelObject.GetComponent<RectTransform>();
+        RectTransform rectTransform = image.rectTransform;
         rectTransform.anchorMin = Vector2.zero;
         rectTransform.anchorMax = Vector2.one;
         rectTransform.offsetMin = Vector2.zero;

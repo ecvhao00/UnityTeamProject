@@ -298,7 +298,7 @@ namespace TarodevController
 
             _frameVelocity.y = jumpPower;
 
-            Jumped?.Invoke();
+            RaiseJumped();
         }
 
         private void ExecuteAirJump()
@@ -312,7 +312,7 @@ namespace TarodevController
 
             _frameVelocity.y = _stats.AirJumpPower;
 
-            Jumped?.Invoke();
+            RaiseJumped();
         }
 
         private void ExecuteWallJump()
@@ -331,12 +331,18 @@ namespace TarodevController
 
             ResetAirJumps();
 
-            Jumped?.Invoke();
+            RaiseJumped();
         }
 
         private void ResetAirJumps()
         {
             _airJumpsRemaining = doubleJumpUnlocked ? _stats.ExtraJumps : 0;
+        }
+
+        private void RaiseJumped()
+        {
+            MainSceneBgm.PlayJump();
+            Jumped?.Invoke();
         }
 
         #endregion

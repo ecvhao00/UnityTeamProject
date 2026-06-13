@@ -6,6 +6,11 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class FallingSignTrap : MonoBehaviour, IGameResettable
 {
+    private const string RumbleClipPath = "Music/Ground_rumble_1";
+    private const float RumbleVolume = 0.8f;
+
+    private static AudioClip rumbleClip;
+
     [Header("References")]
     [SerializeField] private Transform signBody;
     [SerializeField] private SpriteRenderer signRenderer;
@@ -38,8 +43,7 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
     private bool triggered;
     private bool falling;
     private Coroutine dropRoutine;
-
-    private static Sprite generatedSquareSprite;
+    private AudioSource rumbleSource;
 
     private void Awake()
     {
@@ -91,49 +95,31 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
 
         if (signRenderer == null)
         {
-            signRenderer = signBody.GetComponent<SpriteRenderer>();
-            if (signRenderer == null)
-            {
-                signRenderer = signBody.gameObject.AddComponent<SpriteRenderer>();
-            }
+            signRenderer = signBody.gameObject.GetOrAdd<SpriteRenderer>();
         }
 
         if (signRenderer.sprite == null)
         {
-            signRenderer.sprite = GetGeneratedSquareSprite();
+            signRenderer.sprite = RuntimeSpriteUtility.WhiteSquareSprite;
         }
 
         signRenderer.color = signColor;
 
         if (signCollider == null)
         {
-            signCollider = signBody.GetComponent<BoxCollider2D>();
-            if (signCollider == null)
-            {
-                signCollider = signBody.gameObject.AddComponent<BoxCollider2D>();
-            }
+            signCollider = signBody.gameObject.GetOrAdd<BoxCollider2D>();
         }
 
         signCollider.isTrigger = signColliderAsTrigger;
 
         if (signRigidbody == null)
         {
-            signRigidbody = signBody.GetComponent<Rigidbody2D>();
-            if (signRigidbody == null)
-            {
-                signRigidbody = signBody.gameObject.AddComponent<Rigidbody2D>();
-            }
+            signRigidbody = signBody.gameObject.GetOrAdd<Rigidbody2D>();
         }
 
         signRigidbody.freezeRotation = true;
 
-        FallingSignHitbox hitbox = signBody.GetComponent<FallingSignHitbox>();
-        if (hitbox == null)
-        {
-            hitbox = signBody.gameObject.AddComponent<FallingSignHitbox>();
-        }
-
-        hitbox.Initialize(this);
+        signBody.gameObject.GetOrAdd<FallingSignHitbox>().Initialize(this);
 
         if (useDustWarning && dustWarning == null)
         {
@@ -197,6 +183,8 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
             dustWarning.Play();
         }
 
+        PlayRumble();
+
         if (wobbleBeforeDrop && warningDuration > 0f)
         {
             yield return WobbleForSeconds(warningDuration);
@@ -206,6 +194,7 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
             yield return new WaitForSeconds(warningDuration);
         }
 
+        StopRumble();
         ResetSignToStart();
 
         falling = true;
@@ -239,6 +228,7 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
         {
             dustWarning.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
+        StopRumble();
         ResetSignToStart();
     }
 
@@ -325,26 +315,29 @@ public class FallingSignTrap : MonoBehaviour, IGameResettable
             || other.GetComponentInParent<PlayerController>() != null;
     }
 
-    private static Sprite GetGeneratedSquareSprite()
+    private void PlayRumble()
     {
-        if (generatedSquareSprite != null) return generatedSquareSprite;
+        rumbleClip ??= Resources.Load<AudioClip>(RumbleClipPath);
+        if (rumbleClip == null) return;
 
-        Texture2D texture = new(1, 1)
+        if (rumbleSource == null)
         {
-            hideFlags = HideFlags.HideAndDontSave,
-            filterMode = FilterMode.Point
-        };
-        texture.SetPixel(0, 0, Color.white);
-        texture.Apply();
+            rumbleSource = gameObject.GetOrAdd<AudioSource>();
+            rumbleSource.playOnAwake = false;
+            rumbleSource.spatialBlend = 0f;
+        }
 
-        generatedSquareSprite = Sprite.Create(
-            texture,
-            new Rect(0f, 0f, 1f, 1f),
-            new Vector2(0.5f, 0.5f),
-            1f
-        );
-        generatedSquareSprite.hideFlags = HideFlags.HideAndDontSave;
+        rumbleSource.clip = rumbleClip;
+        rumbleSource.loop = true;
+        rumbleSource.volume = RumbleVolume;
+        rumbleSource.Play();
+    }
 
-        return generatedSquareSprite;
+    private void StopRumble()
+    {
+        if (rumbleSource != null)
+        {
+            rumbleSource.Stop();
+        }
     }
 }

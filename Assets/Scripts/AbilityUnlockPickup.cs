@@ -1,3 +1,4 @@
+using System.Collections;
 using TarodevController;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,7 +33,6 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
     [SerializeField] private float floatFrequency = 1.2f;
     [SerializeField] private float floatPhaseOffset;
 
-    private static Sprite generatedSquareSprite;
     private bool consumed;
     private Vector3 baseLocalPosition;
     private bool hasBaseLocalPosition;
@@ -75,10 +75,10 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
         bool usesGeneratedSquare = renderer.sprite == null;
         if (renderer.sprite == null)
         {
-            renderer.sprite = GetGeneratedSquareSprite();
+            renderer.sprite = RuntimeSpriteUtility.WhiteSquareSprite;
         }
 
-        renderer.color = usesGeneratedSquare || renderer.sprite == generatedSquareSprite
+        renderer.color = usesGeneratedSquare || renderer.sprite == RuntimeSpriteUtility.WhiteSquareSprite
             ? GetAbilityColor()
             : Color.white;
         transform.localScale = new Vector3(size.x, size.y, 1f);
@@ -98,26 +98,31 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
         if (player == null) return;
 
         consumed = true;
+        MainSceneBgm.PlayCollect();
 
         switch (ability)
         {
             case PlayerAbilityUnlock.DoubleJump:
                 player.UnlockDoubleJump();
-                AbilityUnlockMessageDisplay.Show("You can double jump");
+                AbilityUnlockWorldMessageDisplay.Show("You can double jump", player.transform);
                 break;
             case PlayerAbilityUnlock.WallJump:
                 player.UnlockWallJump();
-                AbilityUnlockMessageDisplay.Show("You can wall jump");
+                AbilityUnlockWorldMessageDisplay.Show("You can wall jump", player.transform);
                 break;
         }
 
-        SaveRespawnState(player);
+        if (SaveRespawnState(player))
+        {
+            AbilityUnlockMessageDisplay.Show("Checkpoint saved");
+        }
+
         SetPickupVisible(false);
     }
 
-    private void SaveRespawnState(PlayerController player)
+    private bool SaveRespawnState(PlayerController player)
     {
-        if (!saveRespawnPoint) return;
+        if (!saveRespawnPoint) return false;
 
         PlayerDeath playerDeath = player.GetComponent<PlayerDeath>();
         if (playerDeath == null)
@@ -125,7 +130,7 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
             playerDeath = player.GetComponentInParent<PlayerDeath>();
         }
 
-        if (playerDeath == null) return;
+        if (playerDeath == null) return false;
 
         Vector2 respawnPoint = (Vector2)GetBaseWorldPosition() + respawnOffset;
         playerDeath.SaveRespawnState(
@@ -133,6 +138,7 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
             player.DoubleJumpUnlocked,
             player.WallJumpUnlocked
         );
+        return true;
     }
 
     public void ResetForGameRestart()
@@ -210,28 +216,6 @@ public class AbilityUnlockPickup : MonoBehaviour, IGameResettable
         return transform.parent == null ? baseLocalPosition : transform.parent.TransformPoint(baseLocalPosition);
     }
 
-    private static Sprite GetGeneratedSquareSprite()
-    {
-        if (generatedSquareSprite != null) return generatedSquareSprite;
-
-        Texture2D texture = new(1, 1)
-        {
-            hideFlags = HideFlags.HideAndDontSave,
-            filterMode = FilterMode.Point
-        };
-        texture.SetPixel(0, 0, Color.white);
-        texture.Apply();
-
-        generatedSquareSprite = Sprite.Create(
-            texture,
-            new Rect(0f, 0f, 1f, 1f),
-            new Vector2(0.5f, 0.5f),
-            1f
-        );
-        generatedSquareSprite.hideFlags = HideFlags.HideAndDontSave;
-
-        return generatedSquareSprite;
-    }
 }
 
 public class AbilityUnlockMessageDisplay : MonoBehaviour
@@ -248,16 +232,7 @@ public class AbilityUnlockMessageDisplay : MonoBehaviour
     private CanvasGroup canvasGroup;
     private Text messageText;
     private RectTransform messageRect;
-    private float timer;
-    private MessageState state = MessageState.Hidden;
-
-    private enum MessageState
-    {
-        Hidden,
-        Entering,
-        Visible,
-        Exiting
-    }
+    private Coroutine messageRoutine;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Prewarm()
@@ -274,6 +249,7 @@ public class AbilityUnlockMessageDisplay : MonoBehaviour
 
     public static void Hide()
     {
+        AbilityUnlockWorldMessageDisplay.Hide();
         if (instance == null) return;
 
         instance.HideImmediate();
@@ -304,60 +280,25 @@ public class AbilityUnlockMessageDisplay : MonoBehaviour
     {
         EnsureUi();
         messageText.text = message;
-        canvasGroup.alpha = 1f;
-        timer = 0f;
-        state = MessageState.Entering;
-        SetMessagePosition(GetOffscreenPosition());
-    }
 
-    private void Update()
-    {
-        if (canvasGroup == null || messageRect == null || state == MessageState.Hidden) return;
-
-        timer += Time.unscaledDeltaTime;
-
-        if (state == MessageState.Entering)
+        if (messageRoutine != null)
         {
-            float progress = Mathf.Clamp01(timer / SlideDuration);
-            SetMessageProgress(GetOffscreenPosition(), GetTargetPosition(), progress);
-
-            if (progress >= 1f)
-            {
-                timer = 0f;
-                state = MessageState.Visible;
-            }
-
-            return;
+            StopCoroutine(messageRoutine);
         }
 
-        if (state == MessageState.Visible)
-        {
-            SetMessagePosition(GetTargetPosition());
-
-            if (timer >= VisibleDuration)
-            {
-                timer = 0f;
-                state = MessageState.Exiting;
-            }
-
-            return;
-        }
-
-        float exitProgress = Mathf.Clamp01(timer / SlideDuration);
-        SetMessageProgress(GetTargetPosition(), GetOffscreenPosition(), exitProgress);
-
-        if (exitProgress >= 1f)
-        {
-            HideImmediate();
-        }
+        messageRoutine = StartCoroutine(ShowRoutine());
     }
 
     private void HideImmediate()
     {
         EnsureUi();
+        if (messageRoutine != null)
+        {
+            StopCoroutine(messageRoutine);
+            messageRoutine = null;
+        }
+
         canvasGroup.alpha = 0f;
-        timer = 0f;
-        state = MessageState.Hidden;
         SetMessagePosition(GetOffscreenPosition());
     }
 
@@ -365,78 +306,48 @@ public class AbilityUnlockMessageDisplay : MonoBehaviour
     {
         if (canvasGroup != null && messageText != null && messageRect != null) return;
 
-        Canvas canvas = gameObject.GetComponent<Canvas>();
-        if (canvas == null)
-        {
-            canvas = gameObject.AddComponent<Canvas>();
-        }
+        RuntimeUiUtility.SetupOverlayCanvas(gameObject, 100);
+        canvasGroup = RuntimeUiUtility.SetupCanvasGroup(gameObject, false);
 
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 100;
-
-        CanvasScaler scaler = gameObject.GetComponent<CanvasScaler>();
-        if (scaler == null)
-        {
-            scaler = gameObject.AddComponent<CanvasScaler>();
-        }
-
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920f, 1080f);
-        scaler.matchWidthOrHeight = 0.5f;
-
-        if (gameObject.GetComponent<GraphicRaycaster>() == null)
-        {
-            gameObject.AddComponent<GraphicRaycaster>();
-        }
-
-        canvasGroup = gameObject.GetComponent<CanvasGroup>();
-        if (canvasGroup == null)
-        {
-            canvasGroup = gameObject.AddComponent<CanvasGroup>();
-        }
-
-        Transform textTransform = transform.Find("Message");
-        GameObject textObject = textTransform != null ? textTransform.gameObject : new GameObject("Message");
-        textObject.transform.SetParent(transform, false);
-
-        messageText = textObject.GetComponent<Text>();
-        if (messageText == null)
-        {
-            messageText = textObject.AddComponent<Text>();
-        }
-
-        messageText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        messageText.fontSize = FontSize;
-        messageText.fontStyle = FontStyle.Bold;
-        messageText.alignment = TextAnchor.UpperCenter;
-        messageText.color = Color.white;
-        messageText.raycastTarget = false;
-        Outline outline = textObject.GetComponent<Outline>();
-        
-        if (outline == null)
-        {
-        outline = textObject.AddComponent<Outline>();
-        }
+        messageText = RuntimeUiUtility.CreateText(transform, "Message", "", FontSize, FontStyle.Bold, TextAnchor.UpperCenter);
+        Outline outline = messageText.gameObject.GetOrAdd<Outline>();
 
         outline.effectColor = Color.black;
         outline.effectDistance = new Vector2(2f, -2f);
         outline.useGraphicAlpha = true;
 
-        messageRect = textObject.GetComponent<RectTransform>();
+        messageRect = messageText.rectTransform;
         messageRect.anchorMin = new Vector2(0f, 1f);
         messageRect.anchorMax = new Vector2(1f, 1f);
         messageRect.pivot = new Vector2(0.5f, 1f);
-        messageRect.anchoredPosition = state == MessageState.Hidden ? GetOffscreenPosition() : GetTargetPosition();
+        messageRect.anchoredPosition = GetOffscreenPosition();
         messageRect.sizeDelta = new Vector2(0f, MessageHeight);
-
-        canvasGroup.blocksRaycasts = false;
-        canvasGroup.interactable = false;
     }
 
-    private void SetMessageProgress(Vector2 from, Vector2 to, float progress)
+    private IEnumerator ShowRoutine()
     {
-        float easedProgress = Mathf.SmoothStep(0f, 1f, progress);
-        SetMessagePosition(Vector2.LerpUnclamped(from, to, easedProgress));
+        canvasGroup.alpha = 1f;
+
+        yield return Slide(GetOffscreenPosition(), GetTargetPosition());
+        yield return new WaitForSecondsRealtime(VisibleDuration);
+        yield return Slide(GetTargetPosition(), GetOffscreenPosition());
+
+        canvasGroup.alpha = 0f;
+        messageRoutine = null;
+    }
+
+    private IEnumerator Slide(Vector2 from, Vector2 to)
+    {
+        float elapsed = 0f;
+        while (elapsed < SlideDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float progress = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / SlideDuration));
+            SetMessagePosition(Vector2.LerpUnclamped(from, to, progress));
+            yield return null;
+        }
+
+        SetMessagePosition(to);
     }
 
     private void SetMessagePosition(Vector2 position)
@@ -455,5 +366,150 @@ public class AbilityUnlockMessageDisplay : MonoBehaviour
     private static Vector2 GetOffscreenPosition()
     {
         return new Vector2(0f, MessageHeight + OffscreenPadding);
+    }
+}
+
+public class AbilityUnlockWorldMessageDisplay : MonoBehaviour
+{
+    private const float VisibleDuration = 1.5f;
+    private const float FadeDuration = 0.75f;
+    private const float WorldOffsetY = 1.5f;
+    private const float MessageHeight = 64f;
+    private const int FontSize = 30;
+
+    private static AbilityUnlockWorldMessageDisplay instance;
+
+    private Canvas canvas;
+    private CanvasGroup canvasGroup;
+    private RectTransform canvasRect;
+    private RectTransform messageRect;
+    private Text messageText;
+    private Coroutine messageRoutine;
+    private Transform followTarget;
+
+    public static void Show(string message, Transform target)
+    {
+        EnsureInstance();
+        instance.ShowMessage(message, target);
+    }
+
+    public static void Hide()
+    {
+        if (instance == null) return;
+
+        instance.HideImmediate();
+    }
+
+    private static void EnsureInstance()
+    {
+        if (instance != null) return;
+
+        GameObject displayObject = new("Ability Unlock World Message Display");
+        instance = displayObject.AddComponent<AbilityUnlockWorldMessageDisplay>();
+    }
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+        EnsureUi();
+        HideImmediate();
+    }
+
+    private void ShowMessage(string message, Transform target)
+    {
+        EnsureUi();
+        followTarget = target;
+        messageText.text = message;
+
+        if (messageRoutine != null)
+        {
+            StopCoroutine(messageRoutine);
+        }
+
+        messageRoutine = StartCoroutine(ShowRoutine());
+    }
+
+    private IEnumerator ShowRoutine()
+    {
+        canvasGroup.alpha = 1f;
+
+        yield return FollowForSeconds(VisibleDuration, 1f);
+
+        float elapsed = 0f;
+        while (elapsed < FadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            canvasGroup.alpha = 1f - Mathf.Clamp01(elapsed / FadeDuration);
+            UpdatePosition();
+            yield return null;
+        }
+
+        HideImmediate();
+    }
+
+    private IEnumerator FollowForSeconds(float duration, float alpha)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            canvasGroup.alpha = alpha;
+            UpdatePosition();
+            yield return null;
+        }
+    }
+
+    private void HideImmediate()
+    {
+        EnsureUi();
+        if (messageRoutine != null)
+        {
+            StopCoroutine(messageRoutine);
+            messageRoutine = null;
+        }
+
+        followTarget = null;
+        canvasGroup.alpha = 0f;
+    }
+
+    private void EnsureUi()
+    {
+        if (canvasGroup != null && messageText != null && messageRect != null) return;
+
+        canvas = RuntimeUiUtility.SetupOverlayCanvas(gameObject, 101);
+        canvasRect = canvas.GetComponent<RectTransform>();
+        canvasGroup = RuntimeUiUtility.SetupCanvasGroup(gameObject, false);
+
+        messageText = RuntimeUiUtility.CreateText(transform, "Message", "", FontSize, FontStyle.Bold);
+        messageText.alignment = TextAnchor.MiddleCenter;
+        Outline outline = messageText.gameObject.GetOrAdd<Outline>();
+        outline.effectColor = Color.black;
+        outline.effectDistance = new Vector2(2f, -2f);
+        outline.useGraphicAlpha = true;
+
+        messageRect = messageText.rectTransform;
+        messageRect.anchorMin = new Vector2(0.5f, 0.5f);
+        messageRect.anchorMax = new Vector2(0.5f, 0.5f);
+        messageRect.pivot = new Vector2(0.5f, 0.5f);
+        messageRect.sizeDelta = new Vector2(620f, MessageHeight);
+    }
+
+    private void UpdatePosition()
+    {
+        if (followTarget == null || Camera.main == null) return;
+
+        Vector3 worldPosition = followTarget.position + Vector3.up * WorldOffsetY;
+        Vector2 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPosition, null, out Vector2 localPosition))
+        {
+            messageRect.anchoredPosition = localPosition;
+        }
     }
 }

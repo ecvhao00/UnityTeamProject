@@ -11,8 +11,6 @@ public class SceneTransitionTrigger : MonoBehaviour
     [SerializeField] private Color editorColor = new(0.9f, 0.4f, 1f, 0.65f);
     [SerializeField] private bool hideRendererInPlay = true;
 
-    private static Sprite generatedSquareSprite;
-
     private void Awake()
     {
         EnsureSetup();
@@ -51,7 +49,7 @@ public class SceneTransitionTrigger : MonoBehaviour
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
         if (renderer.sprite == null)
         {
-            renderer.sprite = GetGeneratedSquareSprite();
+            renderer.sprite = RuntimeSpriteUtility.WhiteSquareSprite;
         }
 
         renderer.color = editorColor;
@@ -69,26 +67,4 @@ public class SceneTransitionTrigger : MonoBehaviour
         SceneFader.LoadScene(targetSceneName);
     }
 
-    private static Sprite GetGeneratedSquareSprite()
-    {
-        if (generatedSquareSprite != null) return generatedSquareSprite;
-
-        Texture2D texture = new(1, 1)
-        {
-            hideFlags = HideFlags.HideAndDontSave,
-            filterMode = FilterMode.Point
-        };
-        texture.SetPixel(0, 0, Color.white);
-        texture.Apply();
-
-        generatedSquareSprite = Sprite.Create(
-            texture,
-            new Rect(0f, 0f, 1f, 1f),
-            new Vector2(0.5f, 0.5f),
-            1f
-        );
-        generatedSquareSprite.hideFlags = HideFlags.HideAndDontSave;
-
-        return generatedSquareSprite;
-    }
 }

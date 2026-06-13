@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using TarodevController;
 
@@ -19,6 +20,7 @@ public class PlayerDeath : MonoBehaviour
     [Header("Respawn")]
     [SerializeField] private KeyCode restartKey = KeyCode.R;
     [SerializeField] private Vector2 initialRespawnPoint = new(0f, -6.3f);
+    [SerializeField, Min(0f)] private float autoRestartDelay = 0.8f;
 
     private Rigidbody2D rb;
     private Collider2D col;
@@ -28,6 +30,7 @@ public class PlayerDeath : MonoBehaviour
     private bool savedWallJumpUnlocked;
     private float defaultGravityScale;
     private RigidbodyConstraints2D defaultConstraints;
+    private Coroutine autoRestartRoutine;
 
     public bool IsDead => isDead;
     public Vector2 CurrentRespawnPoint => currentRespawnPoint;
@@ -65,6 +68,9 @@ public class PlayerDeath : MonoBehaviour
     {
         if (Input.GetKeyDown(restartKey))
         {
+            if (SceneFader.IsTransitioning) return;
+
+            StopAutoRestart();
             RestartGame();
             return;
         }
@@ -179,5 +185,21 @@ public class PlayerDeath : MonoBehaviour
         }
 
         Debug.Log("Player Dead");
+        autoRestartRoutine = StartCoroutine(AutoRestartRoutine());
+    }
+
+    private IEnumerator AutoRestartRoutine()
+    {
+        yield return new WaitForSecondsRealtime(autoRestartDelay);
+        yield return SceneFader.FadeOutIn(RestartGame);
+        autoRestartRoutine = null;
+    }
+
+    private void StopAutoRestart()
+    {
+        if (autoRestartRoutine == null) return;
+
+        StopCoroutine(autoRestartRoutine);
+        autoRestartRoutine = null;
     }
 }

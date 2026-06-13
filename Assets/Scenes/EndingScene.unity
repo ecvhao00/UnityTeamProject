@@ -241,5 +241,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndingSceneController
   titleSceneName: TitleScene
-  endingText: The End
-  promptText: Press Enter
+  returnDelay: 5

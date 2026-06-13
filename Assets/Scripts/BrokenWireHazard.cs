@@ -27,12 +27,10 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
     private Coroutine cycleRoutine;
     private bool electricOn;
 
-    private static Sprite generatedSquareSprite;
-
     private void Awake()
     {
         EnsureSetup();
-        SetElectricState(startElectricOn);
+        SetElectricState(startElectricOn, false);
     }
 
     private void OnEnable()
@@ -45,7 +43,7 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
         }
         else
         {
-            SetElectricState(startElectricOn);
+            SetElectricState(startElectricOn, false);
         }
     }
 
@@ -66,7 +64,7 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
             cycleRoutine = null;
         }
 
-        SetElectricState(startElectricOn);
+        SetElectricState(startElectricOn, false);
 
         if (Application.isPlaying && isActiveAndEnabled)
         {
@@ -86,7 +84,7 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
 
         if (!Application.isPlaying)
         {
-            SetElectricState(startElectricOn);
+            SetElectricState(startElectricOn, false);
         }
     }
 
@@ -100,8 +98,8 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
         if (spriteRenderer.sprite == null)
         {
             spriteRenderer.sprite = startElectricOn
-                ? electricOnSprite != null ? electricOnSprite : GetGeneratedSquareSprite()
-                : electricOffSprite != null ? electricOffSprite : GetGeneratedSquareSprite();
+                ? electricOnSprite != null ? electricOnSprite : RuntimeSpriteUtility.WhiteSquareSprite
+                : electricOffSprite != null ? electricOffSprite : RuntimeSpriteUtility.WhiteSquareSprite;
         }
 
         ApplySpriteRendererSize();
@@ -112,7 +110,7 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
     {
         if (startDelay > 0f)
         {
-            SetElectricState(false);
+            SetElectricState(false, false);
             yield return new WaitForSeconds(startDelay);
         }
 
@@ -136,8 +134,9 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
         }
     }
 
-    private void SetElectricState(bool active)
+    private void SetElectricState(bool active, bool playSfx = true)
     {
+        bool wasElectricOn = electricOn;
         electricOn = active;
 
         if (spriteRenderer != null)
@@ -149,11 +148,16 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
             }
             else if (spriteRenderer.sprite == null)
             {
-                spriteRenderer.sprite = GetGeneratedSquareSprite();
+                spriteRenderer.sprite = RuntimeSpriteUtility.WhiteSquareSprite;
             }
 
             ApplySpriteRendererSize();
             spriteRenderer.color = electricOn ? electricOnColor : electricOffColor;
+        }
+
+        if (playSfx && Application.isPlaying && electricOn && !wasElectricOn)
+        {
+            ElectricSfxManager.PlayAt(transform.position);
         }
     }
 
@@ -200,26 +204,4 @@ public class BrokenWireHazard : MonoBehaviour, IGameResettable
         }
     }
 
-    private static Sprite GetGeneratedSquareSprite()
-    {
-        if (generatedSquareSprite != null) return generatedSquareSprite;
-
-        Texture2D texture = new(1, 1)
-        {
-            hideFlags = HideFlags.HideAndDontSave,
-            filterMode = FilterMode.Point
-        };
-        texture.SetPixel(0, 0, Color.white);
-        texture.Apply();
-
-        generatedSquareSprite = Sprite.Create(
-            texture,
-            new Rect(0f, 0f, 1f, 1f),
-            new Vector2(0.5f, 0.5f),
-            1f
-        );
-        generatedSquareSprite.hideFlags = HideFlags.HideAndDontSave;
-
-        return generatedSquareSprite;
-    }
 }
