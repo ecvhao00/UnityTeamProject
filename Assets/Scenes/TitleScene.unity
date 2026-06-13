@@ -241,5 +241,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleSceneController
   mainSceneName: NewMainScene
-  titleText: G4 Team Project
-  promptText: Press Enter

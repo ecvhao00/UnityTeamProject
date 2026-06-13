@@ -1,14 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
+
 public class TitleSceneController : MonoBehaviour
 {
     [SerializeField] private string mainSceneName = "NewMainScene";
-    [SerializeField] private string titleText = "G4 Team Project";
-    [SerializeField] private string promptText = "Press Enter";
 
     private void Start()
     {
         SceneFader.FadeIn();
-        CreateUi();
+        ShowOpImage();
     }
 
     private void Update()
@@ -23,10 +23,23 @@ public class TitleSceneController : MonoBehaviour
         }
     }
 
-    private void CreateUi()
+    private void ShowOpImage()
     {
         Transform canvas = RuntimeUiUtility.CreateOverlayCanvas("Title Canvas").transform;
-        RuntimeUiUtility.CreateCenteredText(canvas, "Title", titleText, 72, FontStyle.Bold, new Vector2(0f, 72f), new Vector2(0f, 120f));
-        RuntimeUiUtility.CreateCenteredText(canvas, "Prompt", promptText, 32, FontStyle.Normal, new Vector2(0f, -52f), new Vector2(0f, 72f));
+
+        GameObject imageObject = new("OP");
+        imageObject.transform.SetParent(canvas, false);
+
+        Image image = imageObject.AddComponent<Image>();
+        Sprite[] sprites = Resources.LoadAll<Sprite>("OP");
+        image.sprite = sprites.Length > 0 ? sprites[0] : null;
+        image.preserveAspect = true;
+        image.raycastTarget = false;
+
+        RectTransform rect = image.rectTransform;
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
     }
 }
