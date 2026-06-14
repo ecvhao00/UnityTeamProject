@@ -5,41 +5,52 @@ public class TitleSceneController : MonoBehaviour
 {
     [SerializeField] private string mainSceneName = "NewMainScene";
 
+    private Image titleImage;
+    private bool showingOp;
+
     private void Start()
     {
         SceneFader.FadeIn();
-        ShowOpImage();
+        CreateTitleImage();
+        ShowImage("Tite");
     }
 
     private void Update()
     {
         if (SceneFader.IsTransitioning) return;
+        if (!Input.GetKeyDown(KeyCode.Return) && !Input.GetKeyDown(KeyCode.KeypadEnter)) return;
 
-        if (Input.GetKeyDown(KeyCode.Return) ||
-            Input.GetKeyDown(KeyCode.Space) ||
-            Input.GetMouseButtonDown(0))
+        if (!showingOp)
         {
-            SceneFader.LoadScene(mainSceneName);
+            showingOp = true;
+            ShowImage("OP");
+            return;
         }
+
+        SceneFader.LoadScene(mainSceneName);
     }
 
-    private void ShowOpImage()
+    private void CreateTitleImage()
     {
         Transform canvas = RuntimeUiUtility.CreateOverlayCanvas("Title Canvas").transform;
 
-        GameObject imageObject = new("OP");
+        GameObject imageObject = new("Title Image");
         imageObject.transform.SetParent(canvas, false);
 
-        Image image = imageObject.AddComponent<Image>();
-        Sprite[] sprites = Resources.LoadAll<Sprite>("OP");
-        image.sprite = sprites.Length > 0 ? sprites[0] : null;
-        image.preserveAspect = true;
-        image.raycastTarget = false;
+        titleImage = imageObject.AddComponent<Image>();
+        titleImage.preserveAspect = true;
+        titleImage.raycastTarget = false;
 
-        RectTransform rect = image.rectTransform;
+        RectTransform rect = titleImage.rectTransform;
         rect.anchorMin = Vector2.zero;
         rect.anchorMax = Vector2.one;
         rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
+    }
+
+    private void ShowImage(string resourceName)
+    {
+        Sprite[] sprites = Resources.LoadAll<Sprite>(resourceName);
+        titleImage.sprite = sprites.Length > 0 ? sprites[0] : null;
     }
 }
